@@ -1,0 +1,44 @@
+version: "2"
+
+networks:
+  monitor:
+      driver: bridge
+
+services:
+  prometheus:
+    image: "prom/prometheus"
+    container_name: monitor-prometheus
+    volumes:
+     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command: "--config.file=/etc/prometheus/prometheus.yml --web.enable-lifecycle --web.enable-admin-api"
+    ports:
+     - "9090:9090"
+    networks:
+     - monitor
+  grafana:
+    image: "grafana/grafana"
+    container_name: monitor-grafana
+    ports:
+     - "3000:3000"
+    networks:
+     - monitor
+  # mysql-exporter:
+  #   image: prom/mysqld-exporter
+  #   container_name: monitor-mysql-exporter
+  #   hostname: monitor-mysql-exporter
+  #   restart: always
+  #   ports:
+  #    - "9104:9104"
+  #   environment:
+  #    - DATA_SOURCE_NAME=exporter:root@tcp(mysql57_master:3306)/
+  #   networks:
+  #    - monitor
+  # redis-exporter:
+  #   image: oliver006/redis_exporter
+  #   container_name: monitor-redis-exporter
+  #   hostname: monitor-redis-exporter
+  #   restart: always
+  #   ports:
+  #    - "9121:9121"
+  #   networks:
+  #    - monitor

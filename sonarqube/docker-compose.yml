@@ -1,0 +1,101 @@
+version: "3"
+
+networks:
+  sonarqube:
+
+services:
+  sonarqube:
+    image: sonarqube:community
+    depends_on:
+      - db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+      SONAR_ES_JAVA_OPTS: -Xms2g -Xmx2g
+    volumes:
+      - ./sonarqube_data:/opt/sonarqube/data
+      - ./sonarqube_extensions:/opt/sonarqube/extensions
+      - ./sonarqube_logs:/opt/sonarqube/logs
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+      - "9092:9092"
+    networks:
+      - sonarqube
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - ./postgresql:/var/lib/postgresql
+      - ./postgresql_data:/var/lib/postgresql/data
+    networks:
+      - sonarqube
+
+# volumes:
+#   sonarqube_data:
+#   sonarqube_extensions:
+#   sonarqube_logs:
+#   postgresql:
+#   postgresql_data:
+
+
+# docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 --restart=always -e SONAR_ES_JAVA_OPTS="-Xms2g -Xmx2g" sonarqube:community
+
+
+
+#go-public
+  # docker run \
+  #   --rm \
+  #   --network sonarqube_sonarqube \
+  #   -e SONAR_HOST_URL="http://192.168.208.1:9000" \
+  #   -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=go-public" \
+  #   -e SONAR_TOKEN="sqp_5dfd9611f9d86994f760aa81c41011e9e4a76ae9" \
+  #   -v "/Users/lunan/workspace/github/go-public:/usr/src" \
+  #   sonarsource/sonar-scanner-cli -X
+
+# #uangme_open_api
+#     docker run \
+#     --rm \
+#     --network sonarqube_sonarqube \
+#     -e SONAR_HOST_URL="http://192.168.208.1:9000" \
+#     -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=uangme_open_api" \
+#     -e SONAR_TOKEN="sqp_dd939b16e07d26e52e25b1bb671e0fbd2c8c1fb6" \
+#     -v "/Users/lunan/workspace/superatom/go/src/gitlab.uangme.id/INA_financial/uangme_open_api:/usr/src" \
+#     sonarsource/sonar-scanner-cli -X \
+#     -Dsonar.exclusions=**/vendor/**,**/*_test.go \
+
+# #pay_order
+#     docker run \
+#     --rm \
+#     --network sonarqube_sonarqube \
+#     -e SONAR_HOST_URL="http://192.168.208.1:9000" \
+#     -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=pay_order" \
+#     -e SONAR_TOKEN="sqp_4fef98fc1e31e76efcf237e3575052b2783351cc" \
+#     -v "/Users/lunan/workspace/superatom/go/src/gitlab.uangme.id/INA_financial/pay_order:/usr/src" \
+#     sonarsource/sonar-scanner-cli -X
+
+
+#  NyopzunM2M7LJ75cDFMg
+  # docker run \
+  #   --rm \
+  #   --network sonarqube_sonarqube \
+  #   -e SONAR_HOST_URL="http://192.168.208.1:9000" \
+  #   -e SONAR_SCANNER_OPTS="-Dsonar.projectKey=go-public" \
+  #   -e SONAR_TOKEN="sqp_5dfd9611f9d86994f760aa81c41011e9e4a76ae9" \
+  #   -v "/Users/lunan/workspace/github/go-public:/usr/src" \
+  #   sonarsource/sonar-scanner-cli -X \
+  #   -Dsonar.sources=. \
+  #   -Dsonar.go.golangci-lint.reportPaths=report.json
+
+
+
+
+
+#     docker run --name postgres -p 5432:5432 -e POSTGRES_USER=sonar -e POSTGRES_PASSWORD=sonar -d postgres
+
+#     docker run --name sonarqube --link postgres -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonar -e SONARQUBE_JDBC_USERNAME=sonar -e SONARQUBE_JDBC_PASSWORD=sonar -p 9000:9000 -d
+
+#     docker run --name sq --link db -e SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar -p 9000:9000 -d docker.io/lu566/sonarqube-zh:7.7

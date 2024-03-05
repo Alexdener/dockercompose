@@ -1,0 +1,71 @@
+version: '2.1'
+networks:
+  jaeger:
+services:
+
+  elasticsearch:
+    container_name: "elasticsearch"
+    image: elasticsearch:7.2.0
+    volumes:
+      - /Users/lunan/workspace/dockercompose/data/jaeger/es/conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+    expose:
+      - "9200"
+    ports:
+      - "9200:9200"
+
+  collector:
+    image: jaegertracing/jaeger-collector
+    environment:
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - ES_SERVER_URLS=http://elasticsearch:9200
+      - ES_USERNAME=elastic
+      - LOG_LEVEL=debug
+    depends_on:
+      - elasticsearch
+    ports:
+      - "14269"
+      - "14268:14268"
+      - "14267"
+      - "14250:14250"
+      - "9411:9411"
+    networks:
+      - jaeger
+
+  agent:
+    image: jaegertracing/jaeger-agent
+    environment:
+      - COLLECTOR_HOST_PORT=collector:14267
+      - LOG_LEVEL=debug
+    ports:
+      - "5775:5775/udp"
+      - "5778:5778"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+    depends_on:
+      - collector
+  query:
+    image: jaegertracing/jaeger-query
+    environment:
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - ES_SERVER_URLS=http://elasticsearch:9200
+      - ES_USERNAME=elastic
+      - LOG_LEVEL=debug
+    ports:
+      - 16686:16686
+    depends_on:
+      - elasticsearch
+    networks:
+      - jaeger
+
+  hotrod:
+    image: jaegertracing/example-hotrod:1.6
+    command: all --jaeger-agent.host-port=agent:6831
+    ports:
+      - 8080:8080
+    depends_on:
+      - agent
+    networks:
+      - jaeger

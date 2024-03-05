@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: 1.16.0
+description: A k8s tutorials in https://github.com/guangzhengli/k8s-tutorials
+name: hello-helm
+type: application
+version: 0.1.0

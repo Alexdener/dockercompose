@@ -1,0 +1,87 @@
+global:
+  scrape_interval: 15s
+
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#             - 192.168.51.58:9093
+#     - file_sd_configs:
+#       - files:
+#         - ./alert.yml
+#         refresh_interval: 1m
+#       scheme: http
+#       timeout: 10s
+#       api_version: v1
+# rule_files:
+#   - ./rules/*.rules.yml
+
+scrape_configs:
+  - job_name: 'node'
+    static_configs:
+      - targets: ['127.0.0.1:9100']
+  - job_name: 'local-jaeger-all-in-one'
+    static_configs:
+      - targets: ['127.0.0.1:14269']
+  # - job_name: 'mysqld_exporter188'
+  #   static_configs:
+  #     - targets: ['127.0.0.1:9104']
+  #       labels:
+  #         app: mysqld_exporter188
+  #         node: node188
+  #         role: mysqld_exporter188
+  # - job_name: 'redis'
+  #   static_configs:
+  #     - targets: ['127.0.0.1:9121']
+  # - job_name: 'jaeger-agent-188'
+  #   static_configs:
+  #     - targets: ['127.0.0.1:14271']
+  # - job_name: 'jaeger-collector-188'
+  #   static_configs:
+  #     - targets: ['127.0.0.1:14269']
+  # - job_name: 'jaeger-query-188'
+  #   static_configs:
+  #     - targets: ['127.0.0.1:16687']
+  # - job_name: 'hertz_demo'
+  #   metrics_path: /hertz
+  #   static_configs:
+  #     - targets: ['127.0.0.1:9001']
+  #       labels:
+  #         namespace: hertz_demo
+  #         pod: 127.0.0.1:9001
+  # - job_name: 'alert_test'
+  #   static_configs:
+  #     - targets: ['192.168.51.58:17900']
+  #       labels:
+  #         namespace: alert_test
+  #         pod: 192.168.51.58:17900
+ 
+  # - job_name: xxx_service_exporter
+  #   honor_timestamps: true
+  #   scrape_interval: 30s
+  #   scrape_timeout: 30s
+  #   metrics_path: /metrics
+  #   scheme: http
+  #   consul_sd_configs:
+  #   - server: 127.0.0.1:8500
+  #     tag_separator: ','
+  #     scheme: http
+  #     allow_stale: true
+  #     refresh_interval: 30s
+  #   relabel_configs:
+  #   - source_labels: [__meta_consul_service_metadata_xxx_metrics]
+  #     separator: ;
+  #     regex: ^xxx-metrics$
+  #     replacement: $1
+  #     action: keep
+  #   - separator: ;
+  #     regex: __meta_consul_service_metadata_(.+)
+  #     replacement: $1
+  #     action: labelmap
+  #   metric_relabel_configs:
+  #   - source_labels: [instance]
+  #     separator: ;
+  #     regex: (.*):(.*)
+  #     target_label: instance
+  #     replacement: $1
+  #     action: replace

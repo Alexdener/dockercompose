@@ -1,0 +1,28 @@
+version: "2"
+
+networks:
+  monitor:
+      driver: bridge
+
+services:
+  mysql57_master:
+    image: "mysql:5.7"
+    container_name: mysql57_master
+    hostname: mysql57_master
+    volumes:
+     - ~/workspace/superatom/mysql/master/conf:/etc/mysql/conf
+     - ~/workspace/superatom/mysql/master/logs:/logs
+     - ~/workspace/superatom/mysql/master/data:/var/lib/mysql
+    ports:
+     - "3306:3306"
+    networks:
+     - monitor
+  # mysql57_slave:
+  #   image: "mysql:5.7"
+  #   container_name: mysql57_slave
+  #   volumes:
+  #    - ~/workspace/superatom/mysql/slave/conf:/etc/mysql/conf
+  #    - ~/workspace/superatom/mysql/slave/logs:/logs
+  #    - ~/workspace/superatom/mysql/slave/data:/var/lib/mysql
+  #   ports:
+  #    - "3307:3306"

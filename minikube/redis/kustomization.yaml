@@ -1,0 +1,8 @@
+secretGenerator:
+- name: mysql-creds
+  literals:
+  - ROOT_PASSWORD=root
+resources:
+  - configmap.yaml
+  - service.yaml
+  - deployment.yaml

@@ -1,0 +1,13 @@
+version: "2"
+
+services:
+  xxx_server:
+    image: default_server:latest
+    container_name: xxx_server
+    hostname: xxx_server
+    volumes:
+     - ~/workspace/xxx/go:/home/xxx/go
+    ports:
+     - 8080:8080
+    command: "/bin/bash"
+

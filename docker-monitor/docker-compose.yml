@@ -1,0 +1,48 @@
+version: '3.7'
+ 
+services:
+  influx:
+    image: tutum/influxdb
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+    volumes:
+      - "./influxdb:/var/lib/influxdb"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role==manager]
+ 
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3001:3000"
+    depends_on:
+      - "influx"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role==manager]
+ 
+  cadvisor:
+    image: google/cadvisor
+    ports:
+      - "8080:8080"
+    command: -logtostderr -docker_only -storage_driver=influxdb -storage_driver_db=cadvisor -storage_driver_host=influx:8086
+    links:
+      - influx
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    depends_on:
+      - influx
+    deploy:
+      mode: global
+
+volumes:
+  influx:
+    driver: local
+  grafana:
+    driver: local
